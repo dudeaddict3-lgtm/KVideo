@@ -30,6 +30,8 @@ export interface AppSettings {
   watchHistory: boolean;
   passwordAccess: boolean;
   accessPasswords: string[];
+  settingsPasswordEnabled: boolean;
+  settingsPasswords: string[];
   // Player settings
   autoNextEpisode: boolean;
   autoSkipIntro: boolean;
@@ -106,6 +108,8 @@ function getDefaultAppSettings(): AppSettings {
     watchHistory: true,
     passwordAccess: false,
     accessPasswords: [],
+    settingsPasswordEnabled: false,
+    settingsPasswords: [],
     autoNextEpisode: true,
     autoSkipIntro: false,
     skipIntroSeconds: 0,
@@ -184,6 +188,8 @@ export const settingsStore = {
         watchHistory: parsed.watchHistory !== undefined ? parsed.watchHistory : true,
         passwordAccess: parsed.passwordAccess !== undefined ? parsed.passwordAccess : false,
         accessPasswords: Array.isArray(parsed.accessPasswords) ? parsed.accessPasswords : [],
+        settingsPasswordEnabled: parsed.settingsPasswordEnabled !== undefined ? parsed.settingsPasswordEnabled : false,
+        settingsPasswords: Array.isArray(parsed.settingsPasswords) ? parsed.settingsPasswords : [],
         autoNextEpisode: parsed.autoNextEpisode !== undefined ? parsed.autoNextEpisode : true,
         autoSkipIntro: parsed.autoSkipIntro !== undefined ? parsed.autoSkipIntro : false,
         skipIntroSeconds: typeof parsed.skipIntroSeconds === 'number' ? parsed.skipIntroSeconds : 0,

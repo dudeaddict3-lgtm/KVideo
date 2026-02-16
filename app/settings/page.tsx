@@ -9,9 +9,11 @@ import { SourceSettings } from '@/components/settings/SourceSettings';
 import { SortSettings } from '@/components/settings/SortSettings';
 import { DataSettings } from '@/components/settings/DataSettings';
 import { PasswordSettings } from '@/components/settings/PasswordSettings';
+import { SettingsPasswordSettings } from '@/components/settings/SettingsPasswordSettings';
 import { DisplaySettings } from '@/components/settings/DisplaySettings';
 import { PlayerSettings } from '@/components/settings/PlayerSettings';
 import { SettingsHeader } from '@/components/settings/SettingsHeader';
+import { SettingsPasswordGate } from '@/components/SettingsPasswordGate';
 import { useSettingsPage } from './hooks/useSettingsPage';
 
 export default function SettingsPage() {
@@ -21,6 +23,9 @@ export default function SettingsPage() {
     passwordAccess,
     accessPasswords,
     envPasswordSet,
+    settingsPasswordEnabled,
+    settingsPasswords,
+    envSettingsPasswordSet,
     realtimeLatency,
     searchDisplayMode,
     fullscreenType,
@@ -40,6 +45,9 @@ export default function SettingsPage() {
     handlePasswordToggle,
     handleAddPassword,
     handleRemovePassword,
+    handleSettingsPasswordToggle,
+    handleAddSettingsPassword,
+    handleRemoveSettingsPassword,
     handleExport,
     handleImportFile,
     handleImportLink,
@@ -62,6 +70,7 @@ export default function SettingsPage() {
   } = useSettingsPage();
 
   return (
+    <SettingsPasswordGate>
     <div className="min-h-screen bg-[var(--bg-color)] bg-[image:var(--bg-image)] bg-fixed">
       <div className="container mx-auto px-4 py-8 max-w-4xl space-y-8">
         {/* Header */}
@@ -83,6 +92,16 @@ export default function SettingsPage() {
           onToggle={handlePasswordToggle}
           onAdd={handleAddPassword}
           onRemove={handleRemovePassword}
+        />
+
+        {/* Settings Password Protection */}
+        <SettingsPasswordSettings
+          enabled={settingsPasswordEnabled}
+          passwords={settingsPasswords}
+          envSettingsPasswordSet={envSettingsPasswordSet}
+          onToggle={handleSettingsPasswordToggle}
+          onAdd={handleAddSettingsPassword}
+          onRemove={handleRemoveSettingsPassword}
         />
 
         {/* Display Settings */}
@@ -171,6 +190,7 @@ export default function SettingsPage() {
         dangerous
       />
     </div>
+    </SettingsPasswordGate>
   );
 }
 

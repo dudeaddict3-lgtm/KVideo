@@ -23,6 +23,10 @@ export function useSettingsPage() {
     const [accessPasswords, setAccessPasswords] = useState<string[]>([]);
     const [envPasswordSet, setEnvPasswordSet] = useState(false);
 
+    const [settingsPasswordEnabled, setSettingsPasswordEnabled] = useState(false);
+    const [settingsPasswords, setSettingsPasswords] = useState<string[]>([]);
+    const [envSettingsPasswordSet, setEnvSettingsPasswordSet] = useState(false);
+
     // Display settings
     const [realtimeLatency, setRealtimeLatency] = useState(false);
     const [searchDisplayMode, setSearchDisplayMode] = useState<SearchDisplayMode>('normal');
@@ -37,6 +41,8 @@ export function useSettingsPage() {
         setSortBy(settings.sortBy);
         setPasswordAccess(settings.passwordAccess);
         setAccessPasswords(settings.accessPasswords);
+        setSettingsPasswordEnabled(settings.settingsPasswordEnabled);
+        setSettingsPasswords(settings.settingsPasswords);
         setRealtimeLatency(settings.realtimeLatency);
         setSearchDisplayMode(settings.searchDisplayMode);
         setFullscreenType(settings.fullscreenType);
@@ -46,8 +52,14 @@ export function useSettingsPage() {
         // Fetch env password status
         fetch('/api/config')
             .then(res => res.json())
-            .then(data => setEnvPasswordSet(data.hasEnvPassword))
-            .catch(() => setEnvPasswordSet(false));
+            .then(data => {
+                setEnvPasswordSet(data.hasEnvPassword);
+                setEnvSettingsPasswordSet(data.hasEnvSettingsPassword);
+            })
+            .catch(() => {
+                setEnvPasswordSet(false);
+                setEnvSettingsPasswordSet(false);
+            });
     }, []);
 
     const handleSourcesChange = (newSources: VideoSource[]) => {
@@ -134,6 +146,37 @@ export function useSettingsPage() {
             watchHistory: true,
             passwordAccess,
             accessPasswords: updated
+        });
+    };
+
+    const handleSettingsPasswordToggle = (enabled: boolean) => {
+        setSettingsPasswordEnabled(enabled);
+        const currentSettings = settingsStore.getSettings();
+        settingsStore.saveSettings({
+            ...currentSettings,
+            settingsPasswordEnabled: enabled,
+        });
+    };
+
+    const handleAddSettingsPassword = (password: string) => {
+        const updated = [...settingsPasswords, password];
+        setSettingsPasswords(updated);
+        const currentSettings = settingsStore.getSettings();
+        settingsStore.saveSettings({
+            ...currentSettings,
+            settingsPasswordEnabled,
+            settingsPasswords: updated,
+        });
+    };
+
+    const handleRemoveSettingsPassword = (password: string) => {
+        const updated = settingsPasswords.filter(p => p !== password);
+        setSettingsPasswords(updated);
+        const currentSettings = settingsStore.getSettings();
+        settingsStore.saveSettings({
+            ...currentSettings,
+            settingsPasswordEnabled,
+            settingsPasswords: updated,
         });
     };
 
@@ -331,6 +374,9 @@ export function useSettingsPage() {
         passwordAccess,
         accessPasswords,
         envPasswordSet,
+        settingsPasswordEnabled,
+        settingsPasswords,
+        envSettingsPasswordSet,
         realtimeLatency,
         searchDisplayMode,
         isAddModalOpen,
@@ -350,6 +396,9 @@ export function useSettingsPage() {
         handlePasswordToggle,
         handleAddPassword,
         handleRemovePassword,
+        handleSettingsPasswordToggle,
+        handleAddSettingsPassword,
+        handleRemoveSettingsPassword,
         handleExport,
         handleImportFile, // Renamed from handleImport
         handleImportLink, // New
