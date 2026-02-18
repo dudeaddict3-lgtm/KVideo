@@ -12,11 +12,12 @@ export type Permission =
   | 'data_management'
   | 'player_settings'
   | 'danmaku_appearance'
-  | 'view_settings';
+  | 'view_settings'
+  | 'iptv_access';
 
 const ROLE_PERMISSIONS: Record<Role, Permission[]> = {
-  super_admin: ['source_management', 'account_management', 'danmaku_api', 'data_management', 'player_settings', 'danmaku_appearance', 'view_settings'],
-  admin: ['player_settings', 'danmaku_appearance', 'view_settings'],
+  super_admin: ['source_management', 'account_management', 'danmaku_api', 'data_management', 'player_settings', 'danmaku_appearance', 'view_settings', 'iptv_access'],
+  admin: ['player_settings', 'danmaku_appearance', 'view_settings', 'iptv_access'],
   viewer: ['view_settings'],
 };
 
@@ -59,6 +60,8 @@ export function clearSession(): void {
   if (typeof window === 'undefined') return;
   sessionStorage.removeItem(SESSION_KEY);
   localStorage.removeItem(SESSION_KEY);
+  // Clear search cache so new session gets fresh results
+  localStorage.removeItem('kvideo_search_cache');
   // Also clear old unlock keys for backward compat cleanup
   sessionStorage.removeItem('kvideo-unlocked');
   localStorage.removeItem('kvideo-unlocked');

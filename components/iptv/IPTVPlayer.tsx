@@ -352,11 +352,14 @@ export function IPTVPlayer({ channel, onClose, channels, onChannelChange }: IPTV
     if (value > 0 && video.muted) video.muted = false;
   };
 
+  const progressRef = useRef<HTMLDivElement>(null);
+
   const handleSeek = (e: React.MouseEvent<HTMLDivElement>) => {
     if (isLive) return;
     const video = videoRef.current;
-    if (!video || !duration) return;
-    const rect = e.currentTarget.getBoundingClientRect();
+    const bar = progressRef.current;
+    if (!video || !duration || !bar) return;
+    const rect = bar.getBoundingClientRect();
     const ratio = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
     video.currentTime = ratio * duration;
   };
@@ -369,6 +372,63 @@ export function IPTVPlayer({ channel, onClose, channels, onChannelChange }: IPTV
       await containerRef.current.requestFullscreen();
     }
   };
+
+  // Keyboard shortcuts (matching main video player)
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return;
+
+      resetControlsTimeout();
+      const video = videoRef.current;
+      if (!video) return;
+
+      switch (e.key.toLowerCase()) {
+        case ' ':
+        case 'k':
+          e.preventDefault();
+          togglePlay();
+          break;
+        case 'f':
+          e.preventDefault();
+          toggleFullscreen();
+          break;
+        case 'm':
+          e.preventDefault();
+          toggleMute();
+          break;
+        case 'escape':
+          e.preventDefault();
+          onClose();
+          break;
+        case 'arrowright':
+        case 'l':
+          e.preventDefault();
+          if (!isLive && isFinite(video.duration)) {
+            video.currentTime = Math.min(video.duration, video.currentTime + 10);
+          }
+          break;
+        case 'arrowleft':
+        case 'j':
+          e.preventDefault();
+          if (!isLive && isFinite(video.duration)) {
+            video.currentTime = Math.max(0, video.currentTime - 10);
+          }
+          break;
+        case 'arrowup':
+          e.preventDefault();
+          video.volume = Math.min(1, video.volume + 0.1);
+          if (video.muted) video.muted = false;
+          break;
+        case 'arrowdown':
+          e.preventDefault();
+          video.volume = Math.max(0, video.volume - 0.1);
+          break;
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  });
 
   const VolumeIcon = isMuted || volume === 0 ? Icons.VolumeX : volume < 0.5 ? Icons.Volume1 : Icons.Volume2;
 
@@ -469,11 +529,12 @@ export function IPTVPlayer({ channel, onClose, channels, onChannelChange }: IPTV
           {!isLive && duration > 0 && (
             <div className="px-4 pt-2">
               <div
+                ref={progressRef}
                 className="group h-1 hover:h-2 bg-white/20 rounded-full cursor-pointer transition-all relative"
                 onClick={(e) => { e.stopPropagation(); handleSeek(e); }}
               >
                 <div
-                  className="h-full bg-[var(--accent-color)] rounded-full relative"
+                  className="h-full bg-[var(--accent-color)] rounded-full relative pointer-events-none"
                   style={{ width: `${(currentTime / duration) * 100}%` }}
                 >
                   <div className="absolute right-0 top-1/2 -translate-y-1/2 w-3 h-3 bg-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity" />
