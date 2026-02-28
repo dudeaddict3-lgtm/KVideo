@@ -1,11 +1,4 @@
-# 项目名称需与 Cloudflare 控制台一致
 name = "kvideo"
-
-# 开启 Node.js 兼容性模式（解决报错的核心）
 compatibility_flags = [ "nodejs_compat" ]
-
-# 设置兼容性日期（建议设为今天或较近日期）
 compatibility_date = "2026-02-28"
-
-# 补充缺失的输出目录配置（根据你的项目构建结果填写，通常是 dist 或 .next）
-pages_build_output_dir = "dist"
+pages_build_output_dir = "./"
