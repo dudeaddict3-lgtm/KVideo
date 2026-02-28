@@ -1,4 +1,4 @@
 name = "kvideo"
 compatibility_flags = [ "nodejs_compat" ]
 compatibility_date = "2026-02-28"
-pages_build_output_dir = "./"
+pages_build_output_dir = ".vercel/output/static"
