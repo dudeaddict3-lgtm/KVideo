@@ -1,5 +1,5 @@
 # 项目名称需与 Cloudflare 控制台一致
-name = "KVideo" 
+name = "kvideo"
 
 # 开启 Node.js 兼容性模式（解决报错的核心）
 compatibility_flags = [ "nodejs_compat" ]
