@@ -6,7 +6,6 @@ import { ThemeProvider } from "@/components/ThemeProvider";
 import { AutoSync } from '@/components/AutoSync'; // <-- 引入了自动同步组件
 import { TVProvider } from "@/lib/contexts/TVContext";
 import { TVNavigationInitializer } from "@/components/TVNavigationInitializer";
-import { Analytics } from "@vercel/analytics/react";
 import { ServiceWorkerRegister } from "@/components/ServiceWorkerRegister";
 import { PasswordGate } from "@/components/PasswordGate";
 import { siteConfig } from "@/lib/config/site-config";
@@ -111,7 +110,6 @@ export default function RootLayout({
               <ScrollPositionManager />
             </PasswordGate>
           </TVProvider>
-          <Analytics />
           <ServiceWorkerRegister />
         </ThemeProvider>
 
